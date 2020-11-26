@@ -1,21 +1,27 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+import "react-native-gesture-handler";
+import React, { useEffect } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import {loadUser} from "./src/actions/auth";
+import { decode, encode } from "base-64";
+import { Provider } from "react-redux";
+import { store } from "./src/store";
+import MainStackNavigator from "./src/navigator/MainStackNavigator";
+if (!global.btoa) {
+  global.btoa = encode;
+}
+if (!global.atob) {
+  global.atob = decode;
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+  useEffect(() => {
+    store.dispatch(loadUser());
+  },[]);
+  return (
+    <Provider store={store}>
+      <NavigationContainer>
+        <MainStackNavigator />
+      </NavigationContainer>
+    </Provider>
+  );
+}
