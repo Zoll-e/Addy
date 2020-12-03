@@ -6,6 +6,7 @@ import {
   TextInput,
   Pressable,
   View,
+  StatusBar,
 } from "react-native";
 import styles from "./styles";
 import PropTypes from "prop-types";
@@ -32,7 +33,6 @@ const HomeScreen = ({ user, getEntities, entities, addEntity }) => {
     setTotal(timed.reduce((sum, timed) => sum + timed, 0));
   }, [entities]);
 
-
   const onAddButtonPress = type => {
     if (entityText && entityText.length > 0) {
       addEntity(type, entityText, user.uid);
@@ -42,12 +42,12 @@ const HomeScreen = ({ user, getEntities, entities, addEntity }) => {
   };
 
   const renderEntity = ({ item }) => {
-    console.log();
     if (item.createdAt && item.createdAt.toMillis() > Date.now() - 57600000) {
       return (
         <View style={styles.entityContainer}>
-          <Text style={styles.entityText}>
-            {item.text} {item.type}
+          <Text style={styles.entityValueText}>{item.text}</Text>
+          <Text style={styles.entityTypeText}>
+            {item.type == "Pénz" ? "Kész" + item.type.toLowerCase() : item.type}
           </Text>
         </View>
       );
@@ -56,6 +56,8 @@ const HomeScreen = ({ user, getEntities, entities, addEntity }) => {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle={"light-content"} />
+
       <View style={styles.formContainer}>
         <TextInput
           style={styles.input}
@@ -69,38 +71,34 @@ const HomeScreen = ({ user, getEntities, entities, addEntity }) => {
         />
       </View>
       <View style={styles.formContainer}>
-        <Pressable
-          style={styles.button}
-          onPress={() => onAddButtonPress("Pénz")}
-        >
-          <Text style={styles.buttonText}>Pénz</Text>
-        </Pressable>
+       
 
         <Pressable
-          style={styles.button}
+          style={styles.card}
           onPress={() => onAddButtonPress("Kártya")}
         >
           <Text style={styles.buttonText}>Kártya</Text>
         </Pressable>
+        <Pressable style={styles.cash} onPress={() => onAddButtonPress("Pénz")}>
+          <Text style={styles.buttonText}>Készpénz</Text>
+        </Pressable>
         <Pressable
-          style={styles.button}
+          style={styles.epay}
           onPress={() => onAddButtonPress("E-pay")}
         >
           <Text style={styles.buttonText}>E-pay</Text>
         </Pressable>
       </View>
-      <View style={styles.entityContainer}>
-        <Text style={styles.entityText}>{total}</Text>
+      <View style={styles.totalParent}>
+        <Text style={styles.totalText}>Napi bevétel: {total}</Text>
       </View>
       {entities && (
-        <View style={styles.listContainer}>
-          <FlatList
-            data={entities}
-            renderItem={renderEntity}
-            keyExtractor={item => item.id}
-            removeClippedSubviews={true}
-          />
-        </View>
+        <FlatList
+          data={entities}
+          renderItem={renderEntity}
+          keyExtractor={item => item.id}
+          removeClippedSubviews={true}
+        />
       )}
     </View>
   );

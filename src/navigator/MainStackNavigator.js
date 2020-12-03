@@ -6,7 +6,6 @@ import {
   StatisticsScreen,
   LoadingScreen,
 } from "../screens";
-
 import { connect } from "react-redux";
 import { logout, loadUser } from "../actions/auth";
 import PropTypes from "prop-types";
@@ -16,21 +15,20 @@ import {
   DrawerItem,
   DrawerContentScrollView,
 } from "@react-navigation/drawer";
+import { StatusBar } from "react-native";
 
 const Drawer = createDrawerNavigator();
 
-const MainStackNavigator = ({
-  isAuthenticated,
-  user,
-  logout,
-  loading,
-}) => {
-  
+const MainStackNavigator = ({ isAuthenticated, user, logout, loading }) => {
   function CustomDrawerContent(props) {
     return (
       <DrawerContentScrollView {...props}>
         <DrawerItemList {...props} />
         <DrawerItem
+          inactiveTintColor="gray"
+          labelStyle={{fontSize:17,marginLeft:15}}
+          activeTintColor="whitesmoke"
+          
           label="Kijelentkezés"
           onPress={() => {
             logout();
@@ -43,18 +41,17 @@ const MainStackNavigator = ({
 
   const authScreens = (
     <>
+
       <Drawer.Screen
         options={{
           swipeEnabled: false,
-
-          drawerLabel: "Bevétel",
           headerShown: true,
+          drawerLabel: "Bevétel",
           headerTitle: "Bevétel",
         }}
         name="Home"
         component={HomeScreen}
-      >
-      </Drawer.Screen>
+      ></Drawer.Screen>
 
       <Drawer.Screen
         options={{
@@ -78,19 +75,48 @@ const MainStackNavigator = ({
       <Drawer.Screen
         options={{
           gestureEnabled: false,
-          headerTitle: "Bejelentkezés",
         }}
         name="Login"
         component={LoginScreen}
+      />
+
+      <Drawer.Screen
+        options={{ gestureEnabled: false }}
+        name="Registration"
+        component={RegistrationScreen}
       />
     </>
   );
 
   return (
+ 
     <Drawer.Navigator
       initialRouteName="Login"
+      
+      drawerStyle={{
+        backgroundColor: "#2c2b30",
+        width: "60%",
+      }}
+      drawerContentOptions={{
+        inactiveTintColor: "gray",
+        labelStyle:    {fontSize: 17, marginLeft:15},
+        activeTintColor: "whitesmoke",
+      }}
+      screenOptions={{
+        
+        headerStyle: {shadowOpacity:50,
+          backgroundColor: "black",
+          
+          
+          
+          shadowColor: "white",
+          borderWidth: 1,
+        },
+        headerTintColor: "white",
+      }}
       drawerContent={props => <CustomDrawerContent {...props} />}
     >
+      
       {loading
         ? loadScreen
         : isAuthenticated && user

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Image, Text, TextInput, Pressable, View } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Image, Text, TextInput, Pressable, Header, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import styles from "./styles";
 import { login } from "../../actions/auth";
@@ -13,6 +13,9 @@ function LoginScreen({ navigation, login, isAuthenticated }) {
   const onFooterLinkPress = () => {
     navigation.navigate("Registration");
   };
+
+  
+  
 
   const onLoginPress = () => {
     login(email, password);

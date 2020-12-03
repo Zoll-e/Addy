@@ -6,6 +6,9 @@ import { decode, encode } from "base-64";
 import { Provider } from "react-redux";
 import { store } from "./src/store";
 import MainStackNavigator from "./src/navigator/MainStackNavigator";
+
+
+
 if (!global.btoa) {
   global.btoa = encode;
 }
@@ -18,10 +21,17 @@ export default function App() {
     store.dispatch(loadUser());
   },[]);
   return (
+    
     <Provider store={store}>
       <NavigationContainer>
+     
+    
+
         <MainStackNavigator />
       </NavigationContainer>
     </Provider>
   );
+
+  
 }
+
