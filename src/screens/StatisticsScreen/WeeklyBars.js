@@ -21,8 +21,9 @@ const WeeklyBars = ({ datas, setHowManyWeeksAgo, howManyWeeksAgo }) => {
   function CustomBar(props) {
     const y0 = props.y0 + cornerRadius;
 
-    return <Bar {...props} y0={y0} />;
+    return <Bar {...props} y0={y0-3} />;
   }
+
   const dayNames = ["H", "K", "Sze", "Cs", "P", "Szo", "V"];
   var card = [];
   var cash = [];
@@ -55,35 +56,34 @@ const WeeklyBars = ({ datas, setHowManyWeeksAgo, howManyWeeksAgo }) => {
         }}
       >
         <View>
-          <VictoryStack theme={barStyles}>
-            <VictoryChart>
-              <VictoryAxis />
-
+          <VictoryChart theme={barStyles}>
+            <VictoryAxis />
+            <VictoryStack colorScale={["#49b675", "#c4342d", "#fc9303"]}>
               <VictoryBar
-                barWidth={35}
+                barWidth={30}
                 cornerRadius={cornerRadius}
                 dataComponent={<CustomBar />}
-                style={{ data: { fill: "#49b675" } }}
+
                 data={cash}
               />
 
               <VictoryBar
-                barWidth={35}
+                barWidth={30}
                 cornerRadius={cornerRadius}
                 dataComponent={<CustomBar />}
-                style={{ data: { fill: "#c4342d" } }}
+
                 data={card}
               />
 
               <VictoryBar
                 cornerRadius={cornerRadius}
-                barWidth={35}
+                barWidth={30}
                 dataComponent={<CustomBar />}
-                style={{ data: { fill: "#fc9303" } }}
+
                 data={epay}
               />
-            </VictoryChart>
-          </VictoryStack>
+            </VictoryStack>
+          </VictoryChart>
         </View>
       </FlingGestureHandler>
     </FlingGestureHandler>
