@@ -12,5 +12,4 @@ web-build/
 # macOS
 .DS_Store
 
-src/firebase/config.jk
-
+ src/firebase/config.js
