@@ -24,9 +24,6 @@ export default function App() {
     
     <Provider store={store}>
       <NavigationContainer>
-     
-    
-
         <MainStackNavigator />
       </NavigationContainer>
     </Provider>

@@ -15,7 +15,6 @@ import {
   DrawerItem,
   DrawerContentScrollView,
 } from "@react-navigation/drawer";
-import { StatusBar } from "react-native";
 
 const Drawer = createDrawerNavigator();
 
@@ -26,9 +25,8 @@ const MainStackNavigator = ({ isAuthenticated, user, logout, loading }) => {
         <DrawerItemList {...props} />
         <DrawerItem
           inactiveTintColor="gray"
-          labelStyle={{fontSize:17,marginLeft:15}}
+          labelStyle={{ fontSize: 17, marginLeft: 15 }}
           activeTintColor="whitesmoke"
-          
           label="Kijelentkezés"
           onPress={() => {
             logout();
@@ -41,7 +39,6 @@ const MainStackNavigator = ({ isAuthenticated, user, logout, loading }) => {
 
   const authScreens = (
     <>
-
       <Drawer.Screen
         options={{
           swipeEnabled: false,
@@ -55,13 +52,14 @@ const MainStackNavigator = ({ isAuthenticated, user, logout, loading }) => {
 
       <Drawer.Screen
         options={{
+          swipeEnabled: false,
           headerShown: true,
           drawerLabel: "Statisztikák",
           headerTitle: "Statisztikák",
         }}
         name="Statistics"
-      >
-        {props => <StatisticsScreen {...props} />}
+      
+        component={StatisticsScreen}>
       </Drawer.Screen>
     </>
   );
@@ -89,34 +87,29 @@ const MainStackNavigator = ({ isAuthenticated, user, logout, loading }) => {
   );
 
   return (
- 
     <Drawer.Navigator
       initialRouteName="Login"
-      
       drawerStyle={{
         backgroundColor: "#2c2b30",
         width: "60%",
       }}
       drawerContentOptions={{
         inactiveTintColor: "gray",
-        labelStyle:    {fontSize: 17, marginLeft:15},
+        labelStyle: { fontSize: 17, marginLeft: 15 },
         activeTintColor: "whitesmoke",
       }}
       screenOptions={{
-        
-        headerStyle: {shadowOpacity:50,
+        headerStyle: {
+          shadowOpacity: 50,
           backgroundColor: "black",
-          
-          
-          
+
           shadowColor: "white",
           borderWidth: 1,
         },
         headerTintColor: "white",
       }}
-      drawerContent={props => <CustomDrawerContent {...props} />}
+      drawerContent={CustomDrawerContent }
     >
-      
       {loading
         ? loadScreen
         : isAuthenticated && user
