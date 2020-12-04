@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, Pressable, StatusBar ,Alert} from "react-native";
+import { Text, View, StatusBar } from "react-native";
 import styles from "./styles";
 import { connect } from "react-redux";
 import { DateTime } from "luxon";
 import WeeklyBars from "./WeeklyBars";
-import Swipeable from "react-native-gesture-handler/Swipeable";
-import { FlingGestureHandler } from "react-native-gesture-handler";
-import { Directions ,State} from "react-native-gesture-handler/GestureHandler";
+
+
+
 
 function StatisticsScreen({ entities }) {
   //____________________________________________________________________________________

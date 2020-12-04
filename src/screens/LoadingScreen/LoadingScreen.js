@@ -1,10 +1,13 @@
 import React from "react";
-import { Text,Image, View } from "react-native";
+import { StatusBar,Image, View } from "react-native";
 import styles from "./styles";
 
 const LoadingScreen =() => {
   return (
+    
+    
     <View style={styles.container}>
+      <StatusBar barStyle={"light-content"} />
       <Image
       style={styles.image}
         source={{

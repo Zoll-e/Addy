@@ -37,6 +37,7 @@ const baseLabelStyles = {
   fontFamily: sansSerif,
   fontSize,
   letterSpacing,
+  
   padding: 10,
   fill: "white",
   stroke: "transparent",
@@ -66,10 +67,11 @@ export default {
       style: {
         axis: {
           fill: "transparent",
-          stroke: charcoal,
+          stroke: "white",
+        
           strokeWidth: 1,
           strokeLinecap,
-          strokeLinejoin,
+          strokeLinejoin:"round",
         },
         axisLabel: assign({}, centeredLabelStyles, {
           padding: 25,

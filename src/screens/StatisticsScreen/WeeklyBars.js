@@ -16,21 +16,22 @@ import {
 
 const WeeklyBars = ({ datas, setHowManyWeeksAgo, howManyWeeksAgo }) => {
   // Custom bar for stacked bar borders
-  const cornerRadius = 3;
+  const cornerRadius = 0;
 
   function CustomBar(props) {
     const y0 = props.y0 + cornerRadius;
 
-    return <Bar {...props} y0={y0-3} />;
+    return <Bar {...props} y0={y0} />;
   }
 
   const dayNames = ["H", "K", "Sze", "Cs", "P", "Szo", "V"];
+  var obj = 0;
   var card = [];
   var cash = [];
   var epay = [];
   if (datas) {
     for (let i = 0; i < datas.length; i++) {
-      var obj = { x: dayNames[i], y: datas[i].cash };
+      obj = { x: dayNames[i], y: datas[i].cash };
       cash.push(obj);
       obj = { x: dayNames[i], y: datas[i].card };
       card.push(obj);
@@ -58,12 +59,11 @@ const WeeklyBars = ({ datas, setHowManyWeeksAgo, howManyWeeksAgo }) => {
         <View>
           <VictoryChart theme={barStyles}>
             <VictoryAxis />
-            <VictoryStack colorScale={["#49b675", "#c4342d", "#fc9303"]}>
+            <VictoryStack  colorScale={["#49b675", "#c4342d", "#fc9303"]}>
               <VictoryBar
                 barWidth={30}
                 cornerRadius={cornerRadius}
                 dataComponent={<CustomBar />}
-
                 data={cash}
               />
 
@@ -71,7 +71,6 @@ const WeeklyBars = ({ datas, setHowManyWeeksAgo, howManyWeeksAgo }) => {
                 barWidth={30}
                 cornerRadius={cornerRadius}
                 dataComponent={<CustomBar />}
-
                 data={card}
               />
 
@@ -79,7 +78,6 @@ const WeeklyBars = ({ datas, setHowManyWeeksAgo, howManyWeeksAgo }) => {
                 cornerRadius={cornerRadius}
                 barWidth={30}
                 dataComponent={<CustomBar />}
-
                 data={epay}
               />
             </VictoryStack>
