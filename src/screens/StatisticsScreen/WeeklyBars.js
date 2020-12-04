@@ -15,15 +15,6 @@ import {
 } from "react-native-gesture-handler";
 
 const WeeklyBars = ({ datas, setHowManyWeeksAgo, howManyWeeksAgo }) => {
-  // Custom bar for stacked bar borders
-  const cornerRadius = 0;
-
-  function CustomBar(props) {
-    const y0 = props.y0 + cornerRadius;
-
-    return <Bar {...props} y0={y0} />;
-  }
-
   const dayNames = ["H", "K", "Sze", "Cs", "P", "Szo", "V"];
   var obj = 0;
   var card = [];
@@ -59,27 +50,12 @@ const WeeklyBars = ({ datas, setHowManyWeeksAgo, howManyWeeksAgo }) => {
         <View>
           <VictoryChart theme={barStyles}>
             <VictoryAxis />
-            <VictoryStack  colorScale={["#49b675", "#c4342d", "#fc9303"]}>
-              <VictoryBar
-                barWidth={30}
-                cornerRadius={cornerRadius}
-                dataComponent={<CustomBar />}
-                data={cash}
-              />
+            <VictoryStack colorScale={["#49b675", "#c4342d", "#fc9303"]}>
+              <VictoryBar barWidth={30} data={cash} />
 
-              <VictoryBar
-                barWidth={30}
-                cornerRadius={cornerRadius}
-                dataComponent={<CustomBar />}
-                data={card}
-              />
+              <VictoryBar barWidth={30} data={card} />
 
-              <VictoryBar
-                cornerRadius={cornerRadius}
-                barWidth={30}
-                dataComponent={<CustomBar />}
-                data={epay}
-              />
+              <VictoryBar barWidth={30} data={epay} />
             </VictoryStack>
           </VictoryChart>
         </View>
