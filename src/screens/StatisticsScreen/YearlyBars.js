@@ -14,17 +14,34 @@ import {
   State,
 } from "react-native-gesture-handler";
 
-const WeeklyBars = ({ datas, setHowManyWeeksAgo, howManyWeeksAgo }) => {
-  const dayNames = ["H", "K", "Sze", "Cs", "P", "Szo", "V"];
+const YearlyBars = ({ datas, setHowManyWeeksAgo, howManyWeeksAgo }) => {
+  const barWidth = 10;
+  const monthNames = [
+    "Január",
+    "Február",
+    "Március",
+    "Április",
+    "Május",
+    "Június",
+    "Július",
+    "Augusztus",
+    "Szeptember",
+    "Október",
+    "November",
+    "December",
+  ];
+  var obj = 0;
   var card = [];
   var cash = [];
   var epay = [];
-
   if (datas) {
     for (let i = 0; i < datas.length; i++) {
-      cash.push({ x: dayNames[i], y: datas[i].cash });
-      card.push({ x: dayNames[i], y: datas[i].card });
-      epay.push( { x: dayNames[i], y: datas[i].epay });
+      obj = { x: monthNames[i], y: datas[i].cash };
+      cash.push(obj);
+      obj = { x: monthNames[i], y: datas[i].card };
+      card.push(obj);
+      obj = { x: monthNames[i], y: datas[i].epay };
+      epay.push(obj);
     }
   }
   return (
@@ -44,22 +61,22 @@ const WeeklyBars = ({ datas, setHowManyWeeksAgo, howManyWeeksAgo }) => {
             setHowManyWeeksAgo(howManyWeeksAgo - 1);
         }}
       >
-        <View>
-          <VictoryChart theme={barStyles} domain={{ x: [0, 7] }}>
-            <VictoryAxis />
+        <VictoryChart theme={barStyles}>
+          <VictoryAxis />
+          <VictoryStack
+            horizontal={true}
+            colorScale={["#49b675", "#c4342d", "#fc9303"]}
+          >
+            <VictoryBar barWidth={barWidth} data={cash} />
 
-            <VictoryStack colorScale={["#49b675", "#c4342d", "#fc9303"]}>
-              <VictoryBar barWidth={30} data={cash} />
+            <VictoryBar barWidth={barWidth} data={card} />
 
-              <VictoryBar barWidth={30} data={card} />
-
-              <VictoryBar barWidth={30} data={epay} />
-            </VictoryStack>
-          </VictoryChart>
-        </View>
+            <VictoryBar barWidth={barWidth} data={epay} />
+          </VictoryStack>
+        </VictoryChart>
       </FlingGestureHandler>
     </FlingGestureHandler>
   );
 };
 
-export default WeeklyBars;
+export default YearlyBars;

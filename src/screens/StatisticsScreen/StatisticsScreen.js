@@ -4,32 +4,19 @@ import styles from "./styles";
 import { connect } from "react-redux";
 import { DateTime } from "luxon";
 import WeeklyBars from "./WeeklyBars";
-
-
-
+import YearlyBars from "./YearlyBars";
+import { ScrollView } from "react-native-gesture-handler";
 
 function StatisticsScreen({ entities }) {
   //____________________________________________________________________________________
 
-  const [sixteenHours, setSixteenHours] = useState(0);
   const [thisWeek, setThisWeek] = useState(0);
   const [thisMonth, setThisMonth] = useState(0);
   const [howManyWeeksAgo, setHowManyWeeksAgo] = useState(0);
-
   const [weekData, setWeekData] = useState(null);
-  const [weekDataKetto, setWeekDataKetto] = useState(null);
 
-  const sixteen = () => {
-    var timed = [];
-    entities.map(
-      e =>
-        e.createdAt &&
-        e.createdAt.toMillis() >
-          DateTime.local().minus({ hours: 16 }).toMillis() &&
-        timed.push(e.text)
-    );
-    setSixteenHours(timed.reduce((sum, timed) => sum + timed, 0));
-  };
+  const [howManyYearsAgo, setHowManyYearsAgo] = useState(0);
+  const [yearData, setYearData] = useState(null);
 
   const week = howManyWeeksAgo => {
     var timed = [];
@@ -94,49 +81,101 @@ function StatisticsScreen({ entities }) {
     }
     return result;
   };
+  //___________________________________________________________________________________________________________________________________________________________________________
+  const yearlySum = howManyYearsAgo => {
+    var result = [];
 
+    var from = DateTime.local()
+      .minus({ years: howManyYearsAgo })
+      .startOf("year");
+
+    for (let i = 0; i < 12; i++) {
+      var timed = [];
+      var cardSum = null;
+      var cashSum = null;
+      var epaySum = null;
+
+      entities.filter(
+        e =>
+          e.createdAt &&
+          from.plus({ months: i }) < e.createdAt.toMillis() &&
+          e.createdAt.toMillis() < from.plus({ months: i + 1 }) &&
+          timed.push({ value: e.text, type: e.type })
+      );
+
+      timed.map(e =>
+        e.type == "E-pay"
+          ? (epaySum += e.value)
+          : e.type == "Kártya"
+          ? (cardSum += e.value)
+          : (cashSum += e.value)
+      );
+      result[i] = { card: cardSum, cash: cashSum, epay: epaySum };
+    }
+
+    return result;
+  };
   //___________________________________________________________________________________________________________________________________________________________________________
 
   useEffect(() => {
-    sixteen();
     week(howManyWeeksAgo);
     month();
     setWeekData(weeklySum(howManyWeeksAgo));
-    //setWeekDataKetto(weeklySum(howManyWeeksAgo ));
+    setYearData(yearlySum(howManyYearsAgo));
   }, [entities, howManyWeeksAgo]);
 
-  //const he = [ <WeeklyBars data={proba[0]} />, <WeeklyBars data={proba[1]} />]
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle={"light-content"} />
-      <Text style={styles.entityText}>
-        {"<-"}{" "}
-        {DateTime.local()
-          .minus({ weeks: howManyWeeksAgo })
-          .startOf("week")
-          .toISODate()}
-        -
-        {DateTime.local()
-          .minus({ weeks: howManyWeeksAgo })
-          .endOf("week")
-          .toISODate()}{" "}
-        {"->"}
-      </Text>
-  
-      {weekData && 
- 
-       <WeeklyBars datas={weekData} setHowManyWeeksAgo={setHowManyWeeksAgo} howManyWeeksAgo={howManyWeeksAgo} />
+    <ScrollView>
+      <View style={styles.container}>
+        <StatusBar barStyle={"light-content"} />
+        <Text style={styles.title}>Heti bevétel: {thisWeek}</Text>
 
-}
-      
+        <Text style={styles.text}>
+          {howManyWeeksAgo == 4 ? "   " : "<- "}
+          {DateTime.local()
+            .minus({ weeks: howManyWeeksAgo })
+            .startOf("week")
+            .toFormat("LLLL dd")}
+          -
+          {DateTime.local()
+            .minus({ weeks: howManyWeeksAgo })
+            .endOf("week")
+            .toFormat("LLLL dd")}
+          {howManyWeeksAgo == 0 ? "   " : " ->"}
+        </Text>
 
-      <Text style={styles.title}>Heti bevétel: {thisWeek}</Text>
+        {weekData && (
+          
+          <WeeklyBars
+            datas={weekData}
+            setHowManyWeeksAgo={setHowManyWeeksAgo}
+            howManyWeeksAgo={howManyWeeksAgo}
+          />
+        )}
 
-      <View style={styles.entityContainer}>
-        <Text style={styles.entityText}>Elmúlt 16 óra: {sixteenHours}</Text>
-        <Text style={styles.entityText}>Jelenlegi hónap: {thisMonth}</Text>
+        <View>
+          <Text style={styles.title}>Havi bevétel: {thisMonth}</Text>
+          {yearData && (
+            <View
+              style={{
+                paddingLeft: 15,
+                paddingRight: 15,
+                width: 300,
+                borderWidth: 1,
+                borderColor: "red",
+              }}
+            >
+              <YearlyBars
+                datas={yearData}
+                setHowManyYearsAgo={setHowManyYearsAgo}
+                howManyYearsAgo={howManyYearsAgo}
+              />
+            </View>
+          )}
+        </View>
+        <Text>Some text</Text>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
