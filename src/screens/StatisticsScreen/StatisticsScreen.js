@@ -11,7 +11,7 @@ function StatisticsScreen({ entities }) {
   //____________________________________________________________________________________
 
   const [thisWeek, setThisWeek] = useState(0);
-  const [thisMonth, setThisMonth] = useState(0);
+  const [thisYear, setThisYear] = useState(0);
   const [howManyWeeksAgo, setHowManyWeeksAgo] = useState(0);
   const [weekData, setWeekData] = useState(null);
 
@@ -33,53 +33,55 @@ function StatisticsScreen({ entities }) {
     setThisWeek(timed.reduce((sum, timed) => sum + timed, 0));
   };
 
-  const month = () => {
+  const year = () => {
     var timed = [];
     entities.map(
       e =>
         e.createdAt &&
         e.createdAt.toMillis() >
-          DateTime.local().minus({ months: 0 }).startOf("month") &&
-        DateTime.local().minus({ months: 0 }).endOf("month") &&
+          DateTime.local().minus({ months: 0 }).startOf("year") &&
+        DateTime.local().minus({ months: 0 }).endOf("year") &&
         timed.push(e.text)
     );
-    setThisMonth(timed.reduce((sum, timed) => sum + timed, 0));
+    setThisYear(timed.reduce((sum, timed) => sum + timed, 0));
     return timed;
   };
 
   //________________________________________________________________________________________________________________________________________________________________________
 
-  const weeklySum = howManyWeeksAgo => {
-    var result = [];
+  const weeklySum = () => {
+    var finalResult = [];
 
-    var from = DateTime.local()
-      .minus({ weeks: howManyWeeksAgo })
-      .startOf("week");
+    for (let j = 0; j < 4; j++) {
+      var from = DateTime.local().minus({ weeks: j }).startOf("week");
+      var result = [];
 
-    for (let i = 0; i < 7; i++) {
-      var timed = [];
-      var cardSum = null;
-      var cashSum = null;
-      var epaySum = null;
+      for (let i = 0; i < 7; i++) {
+        var timed = [];
+        var cardSum = null;
+        var cashSum = null;
+        var epaySum = null;
 
-      entities.filter(
-        e =>
-          e.createdAt &&
-          from.plus({ days: i }) < e.createdAt.toMillis() &&
-          e.createdAt.toMillis() < from.plus({ days: i + 1 }) &&
-          timed.push({ value: e.text, type: e.type })
-      );
+        entities.filter(
+          e =>
+            e.createdAt &&
+            from.plus({ days: i }) < e.createdAt.toMillis() &&
+            e.createdAt.toMillis() < from.plus({ days: i + 1 }) &&
+            timed.push({ value: e.text, type: e.type })
+        );
 
-      timed.map(e =>
-        e.type == "E-pay"
-          ? (epaySum += e.value)
-          : e.type == "Kártya"
-          ? (cardSum += e.value)
-          : (cashSum += e.value)
-      );
-      result[i] = { card: cardSum, cash: cashSum, epay: epaySum };
+        timed.map(e =>
+          e.type == "E-pay"
+            ? (epaySum += e.value)
+            : e.type == "Kártya"
+            ? (cardSum += e.value)
+            : (cashSum += e.value)
+        );
+        result[i] = { card: cardSum, cash: cashSum, epay: epaySum };
+      }
+      finalResult.push(result);
     }
-    return result;
+    return finalResult;
   };
   //___________________________________________________________________________________________________________________________________________________________________________
   const yearlySum = howManyYearsAgo => {
@@ -91,9 +93,9 @@ function StatisticsScreen({ entities }) {
 
     for (let i = 0; i < 12; i++) {
       var timed = [];
-      var cardSum = null;
-      var cashSum = null;
-      var epaySum = null;
+      var cardSum = 0;
+      var cashSum = 0;
+      var epaySum = 0;
 
       entities.filter(
         e =>
@@ -115,23 +117,31 @@ function StatisticsScreen({ entities }) {
 
     return result;
   };
-  //___________________________________________________________________________________________________________________________________________________________________________
 
+  //___________________________________________________________________________________________________________________________________________________________________________
   useEffect(() => {
     week(howManyWeeksAgo);
-    month();
-    setWeekData(weeklySum(howManyWeeksAgo));
+
+  }, [howManyWeeksAgo]);
+  useEffect(() => {
+    week(howManyWeeksAgo);
+    year();
+    setWeekData(weeklySum());
     setYearData(yearlySum(howManyYearsAgo));
-  }, [entities, howManyWeeksAgo]);
+
+  }, [entities]);
+
+
 
   return (
-    <ScrollView>
+    
+    <ScrollView style={{ backgroundColor: "#2c2b30" }}>
       <View style={styles.container}>
         <StatusBar barStyle={"light-content"} />
         <Text style={styles.title}>Heti bevétel: {thisWeek}</Text>
 
         <Text style={styles.text}>
-          {howManyWeeksAgo == 4 ? "   " : "<- "}
+          {howManyWeeksAgo == 3 ? "   " : "<- "}
           {DateTime.local()
             .minus({ weeks: howManyWeeksAgo })
             .startOf("week")
@@ -145,38 +155,25 @@ function StatisticsScreen({ entities }) {
         </Text>
 
         {weekData && (
-          
           <WeeklyBars
             datas={weekData}
-            setHowManyWeeksAgo={setHowManyWeeksAgo}
             howManyWeeksAgo={howManyWeeksAgo}
+            setHowManyWeeksAgo={setHowManyWeeksAgo}
           />
         )}
+        <Text style={styles.title}>Éves bevétel: {thisYear}</Text>
+        <Text style={styles.text}>2020</Text>
 
-        <View>
-          <Text style={styles.title}>Havi bevétel: {thisMonth}</Text>
-          {yearData && (
-            <View
-              style={{
-                paddingLeft: 15,
-                paddingRight: 15,
-                width: 300,
-                borderWidth: 1,
-                borderColor: "red",
-              }}
-            >
-              <YearlyBars
-                datas={yearData}
-                setHowManyYearsAgo={setHowManyYearsAgo}
-                howManyYearsAgo={howManyYearsAgo}
-              />
-            </View>
-          )}
-        </View>
-        <Text>Some text</Text>
+        {yearData && (
+          <YearlyBars
+            datas={yearData}
+            setHowManyYearsAgo={setHowManyYearsAgo}
+            howManyYearsAgo={howManyYearsAgo}
+          />
+        )}
       </View>
-    </ScrollView>
-  );
+    </ScrollView> 
+  )
 }
 
 const mapStateToProps = state => ({
