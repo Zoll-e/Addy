@@ -7,22 +7,17 @@ import {
   Pressable,
   View,
   StatusBar,
-  Animated
+  Animated,
 } from "react-native";
 import styles from "./styles";
 import PropTypes from "prop-types";
 import { logout } from "../../actions/auth";
 import { connect } from "react-redux";
 import { getEntities, addEntity, removeEntity } from "../../actions/entity";
-import {
-  Swipeable,
-  RectButton,
-  
-} from "react-native-gesture-handler";
+import { Swipeable, RectButton } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/Feather";
 
 const AnimatedIcon = Animated.createAnimatedComponent(Icon);
-
 
 const HomeScreen = ({
   user,
@@ -33,7 +28,7 @@ const HomeScreen = ({
 }) => {
   const [entityText, setEntityText] = useState("");
   const [total, setTotal] = useState(0);
- 
+
   //_____________________________________-
 
   //_____________________________________
@@ -59,14 +54,10 @@ const HomeScreen = ({
       Keyboard.dismiss();
     }
   };
- 
-  const renderRightAction = ( id) => {
-   
-    return (
-      <RectButton
-        style={[styles.rightAction]}
-        onPress={()=>removeEntity(id)}
-      >
+
+  const renderRightActions = id => (
+    <View style={{ width: 60, flexDirection: "row-reverse" }}>
+      <RectButton style={[styles.rightAction]} onPress={() => removeEntity(id)}>
         <AnimatedIcon
           name="delete"
           size={23}
@@ -74,37 +65,26 @@ const HomeScreen = ({
           style={[styles.actionIcon]}
         />
       </RectButton>
-    );
-  };
-  const renderRightActions = (id) => (
-    <View style={{ width: 60, flexDirection: "row-reverse" }}>
-      {renderRightAction(  id)}
     </View>
   );
- 
+
   const renderEntity = ({ item }) => {
     if (item.createdAt && item.createdAt.toMillis() > Date.now() - 57600000) {
       return (
         <Swipeable
-        
-        friction={2}
-        leftThreshold={30}
-        rightThreshold={40}
-        renderRightActions={()=>renderRightActions(item.id)}
-        
-       
-      >
-        <View style={styles.entityContainer}>
-          <Text
-            
-            style={styles.entityValueText}
-          >
-            {item.text}
-          </Text>
-          <Text style={styles.entityTypeText}>
-            {item.type == "Pénz" ? "Kész" + item.type.toLowerCase() : item.type}
-          </Text>
-        </View>
+          friction={2}
+          leftThreshold={30}
+          rightThreshold={40}
+          renderRightActions={() => renderRightActions(item.id)}
+        >
+          <View style={styles.entityContainer}>
+            <Text style={styles.entityValueText}>{item.text}</Text>
+            <Text style={styles.entityTypeText}>
+              {item.type == "Pénz"
+                ? "Kész" + item.type.toLowerCase()
+                : item.type}
+            </Text>
+          </View>
         </Swipeable>
       );
     }
