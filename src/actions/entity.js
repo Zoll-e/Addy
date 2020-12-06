@@ -3,6 +3,8 @@ import {
   ENTITY_FAIL,
   ENTITY_ADDED,
   ENTITY_ADD_FAIL,
+  REMOVE_SUCCES,
+  REMOVE_FAIL,
 } from "./types";
 import { firebase } from "../firebase/config";
 
@@ -48,3 +50,13 @@ export const addEntity = (type, entityText, id) => async dispatch => {
     dispatch({ ENTITY_ADD_FAIL });
   }
 };
+
+export const removeEntity = (id) => async dispatch => {
+  try {
+   await entityRef.doc(id).delete();
+
+   dispatch({type:REMOVE_SUCCESS})
+  } catch (error) {
+    dispatch({type: REMOVE_FAIL})
+  }
+}

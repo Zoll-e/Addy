@@ -68,6 +68,7 @@ export default StyleSheet.create({
   entityContainer: {
     flexDirection: "row",
 
+    backgroundColor:"#2c2b30",
     justifyContent: "center",
   },
   entityTypeText: {
@@ -87,4 +88,21 @@ export default StyleSheet.create({
     fontSize: 18,
     color: "#f2f2f2",
   },
+  delete: {
+    backgroundColor:"red"
+  },
+ 
+  
+    actionIcon: {
+      width: 30,
+  
+      marginHorizontal: 10,
+    },
+    rightAction: {
+      alignItems: "center",
+      flex: 1,
+      justifyContent: "center",
+    },
+
+  
 });

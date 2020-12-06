@@ -7,17 +7,36 @@ import {
   Pressable,
   View,
   StatusBar,
+  Animated
 } from "react-native";
 import styles from "./styles";
 import PropTypes from "prop-types";
 import { logout } from "../../actions/auth";
 import { connect } from "react-redux";
-import { getEntities, addEntity } from "../../actions/entity";
+import { getEntities, addEntity, removeEntity } from "../../actions/entity";
+import {
+  Swipeable,
+  RectButton,
+  
+} from "react-native-gesture-handler";
+import Icon from "react-native-vector-icons/Feather";
 
-const HomeScreen = ({ user, getEntities, entities, addEntity }) => {
+const AnimatedIcon = Animated.createAnimatedComponent(Icon);
+
+
+const HomeScreen = ({
+  user,
+  getEntities,
+  entities,
+  addEntity,
+  removeEntity,
+}) => {
   const [entityText, setEntityText] = useState("");
   const [total, setTotal] = useState(0);
+ 
+  //_____________________________________-
 
+  //_____________________________________
   useEffect(() => {
     user && getEntities(user.uid);
   }, []);
@@ -40,16 +59,53 @@ const HomeScreen = ({ user, getEntities, entities, addEntity }) => {
       Keyboard.dismiss();
     }
   };
-
+ 
+  const renderRightAction = ( id) => {
+   
+    return (
+      <RectButton
+        style={[styles.rightAction]}
+        onPress={()=>removeEntity(id)}
+      >
+        <AnimatedIcon
+          name="delete"
+          size={23}
+          color={"#cf352e"}
+          style={[styles.actionIcon]}
+        />
+      </RectButton>
+    );
+  };
+  const renderRightActions = (id) => (
+    <View style={{ width: 60, flexDirection: "row-reverse" }}>
+      {renderRightAction(  id)}
+    </View>
+  );
+ 
   const renderEntity = ({ item }) => {
     if (item.createdAt && item.createdAt.toMillis() > Date.now() - 57600000) {
       return (
+        <Swipeable
+        
+        friction={2}
+        leftThreshold={30}
+        rightThreshold={40}
+        renderRightActions={()=>renderRightActions(item.id)}
+        
+       
+      >
         <View style={styles.entityContainer}>
-          <Text style={styles.entityValueText}>{item.text}</Text>
+          <Text
+            
+            style={styles.entityValueText}
+          >
+            {item.text}
+          </Text>
           <Text style={styles.entityTypeText}>
             {item.type == "Pénz" ? "Kész" + item.type.toLowerCase() : item.type}
           </Text>
         </View>
+        </Swipeable>
       );
     }
   };
@@ -71,8 +127,6 @@ const HomeScreen = ({ user, getEntities, entities, addEntity }) => {
         />
       </View>
       <View style={styles.formContainer}>
-       
-
         <Pressable
           style={styles.card}
           onPress={() => onAddButtonPress("Kártya")}
@@ -112,7 +166,11 @@ HomeScreen.propTypes = {
   getEntities: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
   addEntity: PropTypes.func.isRequired,
+  removeEntity: PropTypes.func.isRequired,
 };
-export default connect(mapStateToProps, { logout, getEntities, addEntity })(
-  HomeScreen
-);
+export default connect(mapStateToProps, {
+  logout,
+  getEntities,
+  addEntity,
+  removeEntity,
+})(HomeScreen);
