@@ -56,13 +56,12 @@ const HomeScreen = ({
   };
 
   const renderRightActions = id => (
-    <View style={{ width: 60, flexDirection: "row-reverse" }}>
+    <View style={{ width: 80, flexDirection: "row-reverse" }}>
       <RectButton style={[styles.rightAction]} onPress={() => removeEntity(id)}>
         <AnimatedIcon
           name="delete"
           size={23}
-          color={"#cf352e"}
-          style={[styles.actionIcon]}
+          color={"white"}
         />
       </RectButton>
     </View>
@@ -126,6 +125,7 @@ const HomeScreen = ({
       <View style={styles.totalParent}>
         <Text style={styles.totalText}>Napi bevétel: {total}</Text>
       </View>
+      <View style={{width:"90%"}} >
       {entities && (
         <FlatList
           data={entities}
@@ -134,6 +134,7 @@ const HomeScreen = ({
           removeClippedSubviews={true}
         />
       )}
+      </View>
     </View>
   );
 };

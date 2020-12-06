@@ -67,20 +67,20 @@ export default StyleSheet.create({
   },
   entityContainer: {
     flexDirection: "row",
-
     backgroundColor:"#2c2b30",
+    alignSelf:"center",
     justifyContent: "center",
   },
   entityTypeText: {
       marginLeft: 5,
     textAlign: "left",
     marginTop:"2%",
-    width: "45%",
+    width: "50%",
     fontSize: 18,
     color: "#f2f2f2",
   },
   entityValueText: {
-    width: "45%",
+    width: "50%",
     marginTop:"2%",
     marginRight: 5,
     textAlign: "right",
@@ -92,15 +92,10 @@ export default StyleSheet.create({
     backgroundColor:"red"
   },
  
-  
-    actionIcon: {
-      width: 30,
-  
-      marginHorizontal: 10,
-    },
     rightAction: {
       alignItems: "center",
       flex: 1,
+      backgroundColor:"#cf352e",
       justifyContent: "center",
     },
 
