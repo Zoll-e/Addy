@@ -1,23 +1,58 @@
-import React, { useEffect, useState } from "react";
-import { Text, View, StatusBar } from "react-native";
-import styles from "./styles";
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import { StatusBar, Text, Pressable, View } from "react-native";
 import { connect } from "react-redux";
 import { DateTime } from "luxon";
-import WeeklyBars from "./WeeklyBars";
-import YearlyBars from "./YearlyBars";
-import { ScrollView } from "react-native-gesture-handler";
+import { FlatList } from "react-native-gesture-handler";
+import Statistics from "./Statistics";
+import styles from "./styles";
 
-function StatisticsScreen({ entities }) {
-  //____________________________________________________________________________________
+const StatisticsScreen = ({ entities }) => {
+  const [thisYear, setThisYear] = useState(null);
+  const [thisMonth, setThisMonth] = useState(0);
 
-  const [thisWeek, setThisWeek] = useState(0);
-  const [thisYear, setThisYear] = useState(0);
-  const [howManyWeeksAgo, setHowManyWeeksAgo] = useState(0);
-  const [weekData, setWeekData] = useState(null);
+  const [index, setIndex] = useState(0);
 
-  const [howManyYearsAgo, setHowManyYearsAgo] = useState(0);
-  const [yearData, setYearData] = useState(null);
+  useEffect(() => {
+    month();
 
+    setThisYear(year());
+  }, [entities, index]);
+  //----------Vendeg-------
+  
+
+  const indexRef = useRef(index);
+  indexRef.current = index;
+  const onScroll = useCallback(event => {
+    const slideSize = event.nativeEvent.layoutMeasurement.width;
+    const index = event.nativeEvent.contentOffset.x / slideSize;
+    const roundIndex = Math.round(index);
+
+    const distance = Math.abs(roundIndex - index);
+
+    const isNoMansLand = 0.4 < distance;
+
+    if (roundIndex !== indexRef.current && !isNoMansLand) {
+      setIndex(roundIndex);
+    }
+   
+  }, []);
+
+  // Use the index
+
+  //__________________________________Vendeg vege____________
+  const month = () => {
+    var timed = [];
+    entities.map(
+      e =>
+        e.createdAt &&
+        e.createdAt.toMillis() > DateTime.local().startOf("month") &&
+        DateTime.local().endOf("month") > e.createdAt.toMillis() &&
+        timed.push(e.text)
+    );
+
+    setThisMonth(timed.reduce((sum, timed) => sum + timed, 0));
+  };
+  //________________________________________________
   const week = howManyWeeksAgo => {
     var timed = [];
     entities.map(
@@ -29,10 +64,11 @@ function StatisticsScreen({ entities }) {
           e.createdAt.toMillis() &&
         timed.push(e.text)
     );
-
-    setThisWeek(timed.reduce((sum, timed) => sum + timed, 0));
+    var result = timed.reduce((sum, timed) => sum + timed, 0);
+    return result;
   };
 
+  //____________________________________________________________________________________
   const year = () => {
     var timed = [];
     entities.map(
@@ -43,65 +79,28 @@ function StatisticsScreen({ entities }) {
         DateTime.local().minus({ months: 0 }).endOf("year") &&
         timed.push(e.text)
     );
-    setThisYear(timed.reduce((sum, timed) => sum + timed, 0));
-    return timed;
+    return timed.reduce((sum, timed) => sum + timed, 0);
   };
-
-  //________________________________________________________________________________________________________________________________________________________________________
-
-  const weeklySum = () => {
-    var finalResult = [];
-
-    for (let j = 0; j < 4; j++) {
-      var from = DateTime.local().minus({ weeks: j }).startOf("week");
-      var result = [];
-
-      for (let i = 0; i < 7; i++) {
-        var timed = [];
-        var cardSum = null;
-        var cashSum = null;
-        var epaySum = null;
-
-        entities.filter(
-          e =>
-            e.createdAt &&
-            from.plus({ days: i }) < e.createdAt.toMillis() &&
-            e.createdAt.toMillis() < from.plus({ days: i + 1 }) &&
-            timed.push({ value: e.text, type: e.type })
-        );
-
-        timed.map(e =>
-          e.type == "E-pay"
-            ? (epaySum += e.value)
-            : e.type == "Kártya"
-            ? (cardSum += e.value)
-            : (cashSum += e.value)
-        );
-        result[i] = { card: cardSum, cash: cashSum, epay: epaySum };
-      }
-      finalResult.push(result);
-    }
-    return finalResult;
-  };
-  //___________________________________________________________________________________________________________________________________________________________________________
-  const yearlySum = howManyYearsAgo => {
+  //_______________
+  const weeklySum = howManyWeeksAgo => {
     var result = [];
+    var highest = 0;
 
-    var from = DateTime.local()
-      .minus({ years: howManyYearsAgo })
-      .startOf("year");
+    for (let i = 0; i < 7; i++) {
+      var from = DateTime.local()
+        .minus({ weeks: howManyWeeksAgo })
+        .startOf("week");
 
-    for (let i = 0; i < 12; i++) {
       var timed = [];
-      var cardSum = 0;
-      var cashSum = 0;
-      var epaySum = 0;
+      var cardSum = null;
+      var cashSum = null;
+      var epaySum = null;
 
       entities.filter(
         e =>
           e.createdAt &&
-          from.plus({ months: i }) < e.createdAt.toMillis() &&
-          e.createdAt.toMillis() < from.plus({ months: i + 1 }) &&
+          from.plus({ days: i }) < e.createdAt.toMillis() &&
+          e.createdAt.toMillis() < from.plus({ days: i + 1 }) &&
           timed.push({ value: e.text, type: e.type })
       );
 
@@ -113,71 +112,54 @@ function StatisticsScreen({ entities }) {
           : (cashSum += e.value)
       );
       result[i] = { card: cardSum, cash: cashSum, epay: epaySum };
+      cardSum + cashSum + epaySum > highest &&
+        (highest = cardSum + cashSum + epaySum);
     }
 
-    return result;
+    return { result, highest };
   };
 
-  //___________________________________________________________________________________________________________________________________________________________________________
-  useEffect(() => {
-    week(howManyWeeksAgo);
+  const slideList = Array.from({ length: 4 }).map((_, i) => {
+    return {
+      id: i,
+      week: weeklySum(i),
+      weekTotal: week(i),
+    };
+  });
 
-  }, [howManyWeeksAgo]);
-  useEffect(() => {
-    week(howManyWeeksAgo);
-    year();
-    setWeekData(weeklySum());
-    setYearData(yearlySum(howManyYearsAgo));
-
-  }, [entities]);
-
-
-
+  //_________________________________________________________________________________________________________________________________________________________
   return (
-    
-    <ScrollView style={{ backgroundColor: "#2c2b30" }}>
-      <View style={styles.container}>
-        <StatusBar barStyle={"light-content"} />
-        <Text style={styles.title}>Heti bevétel: {thisWeek}</Text>
+    <View style={styles.container}>
+      <StatusBar barStyle={"light-content"} />
 
-        <Text style={styles.text}>
-          {howManyWeeksAgo == 3 ? "   " : "<- "}
-          {DateTime.local()
-            .minus({ weeks: howManyWeeksAgo })
-            .startOf("week")
-            .toFormat("LLLL dd")}
-          -
-          {DateTime.local()
-            .minus({ weeks: howManyWeeksAgo })
-            .endOf("week")
-            .toFormat("LLLL dd")}
-          {howManyWeeksAgo == 0 ? "   " : " ->"}
-        </Text>
-
-        {weekData && (
-          <WeeklyBars
-            datas={weekData}
-            howManyWeeksAgo={howManyWeeksAgo}
-            setHowManyWeeksAgo={setHowManyWeeksAgo}
-          />
+      <FlatList
+        data={slideList}
+        renderItem={({ item }) => (
+          <Statistics item={item} />
         )}
-        <Text style={styles.title}>Éves bevétel: {thisYear}</Text>
-        <Text style={styles.text}>2020</Text>
+        inverted
+        onScroll={onScroll}
+        pagingEnabled
+        horizontal
+        keyExtractor={item => item.id.toString()}
 
-        {yearData && (
-          <YearlyBars
-            datas={yearData}
-            setHowManyYearsAgo={setHowManyYearsAgo}
-            howManyYearsAgo={howManyYearsAgo}
-          />
-        )}
-      </View>
-    </ScrollView> 
-  )
-}
+        showsHorizontalScrollIndicator={false}
+      ></FlatList>
+
+      <Text style={styles.secondaryTitle}>
+        {DateTime.local().toFormat("LLLL")}: {thisMonth}
+      </Text>
+      <View
+        style={{
+          width: "100%",
+          height: 500,
+        }}
+      ></View>
+    </View>
+  );
+};
 
 const mapStateToProps = state => ({
   entities: state.entity.entities,
 });
-
 export default connect(mapStateToProps)(StatisticsScreen);

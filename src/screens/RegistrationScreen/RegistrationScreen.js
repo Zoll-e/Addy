@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Image, Text, TextInput, Pressable, View } from "react-native";
+import {
+  Image,
+  Text,
+  TextInput,
+  Pressable,
+  View,
+  StatusBar,
+} from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import styles from "./styles";
 import { connect } from "react-redux";
@@ -26,13 +33,15 @@ function RegistrationScreen({ navigation, register }) {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle={"light-content"} />
+
       <KeyboardAwareScrollView
         style={{ flex: 1, width: "100%" }}
         keyboardShouldPersistTaps="always"
       >
         <Image
           style={styles.logo}
-          source={require("../../../assets/icon.png")}
+          source={require("../../../assets/logo.png")}
         />
         <TextInput
           style={styles.input}

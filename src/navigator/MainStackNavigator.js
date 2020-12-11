@@ -61,6 +61,7 @@ const MainStackNavigator = ({ isAuthenticated, user, logout, loading }) => {
       
         component={StatisticsScreen}>
       </Drawer.Screen>
+     
     </>
   );
   const loadScreen = (

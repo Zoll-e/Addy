@@ -5,18 +5,18 @@ export default StyleSheet.create({
         flex: 1,
         flexDirection:'row',
         justifyContent:'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor: "#2c2b30",
+        paddingBottom:25,
+
     },
     title: {
 
     },
     logo: {
-        flex: 1,
-        height: 120,
-        width: 90,
+        resizeMode: "center",
         alignSelf: "center",
-        margin: 30
-    },
+      },
     input: {
         height: 48,
         borderRadius: 5,
@@ -50,7 +50,7 @@ export default StyleSheet.create({
     },
     footerText: {
         fontSize: 16,
-        color: '#2e2e2d'
+        color: 'white'
     },
     footerLink: {
         color: "#788eec",

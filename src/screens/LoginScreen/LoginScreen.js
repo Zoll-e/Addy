@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Image, Text, TextInput, Pressable, Header, View } from "react-native";
+import { Image, Text, TextInput, Pressable, StatusBar, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import styles from "./styles";
 import { login } from "../../actions/auth";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+
 
 function LoginScreen({ navigation, login, isAuthenticated }) {
   const [email, setEmail] = useState("");
@@ -23,11 +24,13 @@ function LoginScreen({ navigation, login, isAuthenticated }) {
 
   return (
     <View style={styles.container}>
+            <StatusBar barStyle={"light-content"} />
+
       <KeyboardAwareScrollView
         style={{ flex: 1, width: "100%" }}
         keyboardShouldPersistTaps="always"
       >
-        <Image style={styles.logo} />
+        <Image  source={require("../../../assets/logo.png")}style={styles.logo} />
         <TextInput
           style={styles.input}
           placeholder="E-mail"

@@ -9,11 +9,10 @@ import {
 import { firebase } from "../firebase/config";
 
 const entityRef = firebase.firestore().collection("entities");
-
 export const getEntities = id => async dispatch => {
   try {
     entityRef
-      .where("authorID", "==", id)
+     .where("authorID", "==", id)
       .orderBy("createdAt", "desc")
       .onSnapshot(querySnapshot => {
         const newEntities = [];
