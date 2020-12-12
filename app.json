@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/adaptive-icon.png",
+      "image": "./assets/iccc.png",
       "resizeMode": "contain",
       "backgroundColor": "#2c2b30"
     },
@@ -14,18 +14,27 @@
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": ["**/*"],
+
     "ios": {
+     
       "supportsTablet": true
     },
-    "androidNavigationBar": {
-      "barStyle": "light-content"
-    },
+
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#2c2b30"
       },
       "package": "com.deze.addy"
+    },
+    
+    "androidNavigationBar": {
+      "backgroundColor":"#000000"
+    },
+    
+    "androidStatusBar": {
+      "barStyle":"light-content",
+      "backgroundColor":"#000000"
     },
     "web": {
       "favicon": "./assets/favicon.png"

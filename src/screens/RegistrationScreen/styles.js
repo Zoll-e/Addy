@@ -7,15 +7,18 @@ export default StyleSheet.create({
         justifyContent:'center',
         alignItems: 'center',
         backgroundColor: "#2c2b30",
-        paddingBottom:25,
 
     },
     title: {
 
     },
     logo: {
-        resizeMode: "center",
-        alignSelf: "center",
+        flex: 1,
+        width: "75%",
+        height: 220,
+        resizeMode: 'contain',
+        marginLeft:"12.5%",
+        marginRight:"12.5%"
       },
     input: {
         height: 48,

@@ -10,10 +10,14 @@ export default StyleSheet.create({
     alignItems: "center",
   },
   title: {},
-  logo: {
-    resizeMode: "center",
-    alignSelf: "center",
-  },
+    logo: {
+      flex: 1,
+      width: "75%",
+      height: 220,
+      resizeMode: 'contain',
+      marginLeft:"12.5%",
+      marginRight:"12.5%"
+    },
 
   input: {
     height: 48,

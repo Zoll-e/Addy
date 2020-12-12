@@ -30,7 +30,7 @@ function LoginScreen({ navigation, login, isAuthenticated }) {
         style={{ flex: 1, width: "100%" }}
         keyboardShouldPersistTaps="always"
       >
-        <Image  source={require("../../../assets/logo.png")}style={styles.logo} />
+        <Image  source={require("../../../assets/iccc.png")}style={styles.logo} />
         <TextInput
           style={styles.input}
           placeholder="E-mail"

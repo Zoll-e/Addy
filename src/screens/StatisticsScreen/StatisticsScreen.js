@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { StatusBar, Text, Pressable, View } from "react-native";
+import { StatusBar, Text, View } from "react-native";
 import { connect } from "react-redux";
 import { DateTime } from "luxon";
 import { FlatList } from "react-native-gesture-handler";

@@ -41,7 +41,7 @@ function RegistrationScreen({ navigation, register }) {
       >
         <Image
           style={styles.logo}
-          source={require("../../../assets/logo.png")}
+          source={require("../../../assets/iccc.png")}
         />
         <TextInput
           style={styles.input}
